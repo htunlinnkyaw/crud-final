@@ -16,13 +16,13 @@ class CategoryController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $categories = Category::where('name', 'LIKE', "%{$query}%")->paginate(3);
+        $categories = Category::where('name', 'LIKE', "%{$query}%")->paginate(2);
         return view('category.index', compact('categories'));
     }
 
     public function index()
     {
-        $categories = Category::paginate(3);
+        $categories = Category::paginate(2);
         return view('category.index', compact('categories'));
     }
 
@@ -39,12 +39,13 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
+        // return $request;
         $category = new Category();
         $category->name = $request->name;
         $category->description = $request->description;
         $category->save();
 
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with('create', 'Category Created Successfully.');
     }
 
     /**
@@ -68,11 +69,11 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category->name = $request->name;
-        $category->description = $request->description;
+        $category->name = $request->cat_name;
+        $category->description = $request->cat_description;
         $category->update();
 
-        return redirect()->route('category.index');
+        return redirect()->route('category.index')->with('update', 'Category Updated Successfully.');
     }
 
     /**

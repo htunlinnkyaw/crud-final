@@ -2,44 +2,41 @@
 
 
 @section('breadcrumb')
-    Create Product
+    Edit Product
 @endsection
 @section('content')
     <section>
-        <form method="post" action="{{ route('item.store') }}" enctype="multipart/form-data">
+        <form method="post" action="{{ route('item.update', $item->id) }}" enctype="multipart/form-data">
             @csrf
+            @method('put')
             <div class="max-w-4xl mx-auto p-4">
                 <!-- Product Photo -->
-                <div class="mb-4">
-                    <div class="flex items-center justify-center w-full">
-                        <label for="dropzone-file"
-                            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                </svg>
-                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click
-                                        to upload</span> or drag and drop</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)
-                                </p>
-                            </div>
-                            <input id="dropzone-file" name="image" type="file" class="hidden" />
-                            @error('image')
-                                <p class="text-red-600  text-sm">{{ $message }}</p>
-                            @enderror
-                        </label>
-                    </div>
 
+                <div class="border border-gray-300 rounded-sm max-w-4xl mb-4">
+                    <label class="text-sm font-mono text-gray-500 ms-3 mt-4">{{ $item->name }} Image</label>
+                    <img src="{{ asset('storage/item_images/' . $item->image) }}" class="w-[300px] mx-auto" alt="">
+                </div>
+                <div class="mb-4">
+
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload
+                        file</label>
+                    <input name="image"
+                        class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        aria-describedby="file_input_help" id="file_input" type="file">
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX.
+                        800x400px).</p>
+
+                    @error('image')
+                        <p class="text-red-600  text-sm">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Product Title, Category, Price, and Stock -->
                 <div class="flex space-x-4 mb-4">
                     <div class="flex-1">
                         <label for="product-title" class="block text-sm font-medium text-gray-700">Product Title</label>
-                        <input type="text" name="name" id="product-title" name="product-title"
+                        <input type="text" value="{{ old('name', $item->name) }}" name="name" id="product-title"
+                            name="product-title"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
 
                         @error('name')
@@ -50,19 +47,21 @@
                         <label for="product-category" class="block text-sm font-medium text-gray-700">Category</label>
                         <select id="product-category" name="category_id" name="product-category"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                            <option selected disabled>Select a Category</option>
+                            <option>Select a Category</option>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                <option value="{{ $category->id }}"
+                                    {{ old('category_id', $item->category_id == $category->id ? 'selected' : '') }}>
+                                    {{ $category->name }}</option>
                             @endforeach
                         </select>
-
                         @error('category_id')
                             <p class="text-red-600  text-sm">{{ $message }}</p>
                         @enderror
                     </div>
                     <div class="flex-1">
                         <label for="product-price" class="block text-sm font-medium text-gray-700">Price</label>
-                        <input type="number" name="price" id="product-price" name="product-price"
+                        <input type="number" value="{{ old('price', $item->price) }}" name="price" id="product-price"
+                            name="product-price"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
 
                         @error('price')
@@ -71,12 +70,13 @@
                     </div>
                     <div class="flex-1">
                         <label for="product-stock" class="block text-sm font-medium text-gray-700">Stock</label>
-                        <input type="number" name="stock" id="product-stock" name="product-stock"
+                        <input type="number" value="{{ old('stock', $item->stock) }}" name="stock" id="product-stock"
+                            name="product-stock"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
+
                         @error('stock')
                             <p class="text-red-600  text-sm">{{ $message }}</p>
                         @enderror
-
                     </div>
                 </div>
 
@@ -85,7 +85,8 @@
                     <label for="product-description" class="block text-sm font-medium text-gray-700">Product
                         Description</label>
                     <textarea id="product-description" name="description" rows="4"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"></textarea>
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">{{ old('description', $item->description) }}</textarea>
+
                     @error('description')
                         <p class="text-red-600  text-sm">{{ $message }}</p>
                     @enderror

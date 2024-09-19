@@ -22,7 +22,19 @@ class StoreItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "name" => "required|string|max:30|min:5|unique:items,name",
+            "price" => "required|integer|min:100|max:30000",
+            "stock" => "required|integer|min:0|max:200",
+            "description" => "required|string|min:10|max:100",
+            "category_id" => "required",
+            "image" => "required"
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'category_id.required' => 'The category field is required.',
         ];
     }
 }

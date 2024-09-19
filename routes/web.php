@@ -21,8 +21,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('vouchers', VoucherController::class);
+
+Route::get('item/search', [ItemController::class, 'search'])->name('item.search');
+Route::get('item/filter', [ItemController::class, 'filter'])->name('item.filter');
 Route::resource('item', ItemController::class);
+
 Route::get('category/search', [CategoryController::class, 'search'])->name('category.search');
 Route::resource('category', CategoryController::class);
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
